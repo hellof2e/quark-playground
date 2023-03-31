@@ -1,4 +1,5 @@
 import * as esbuild from 'esbuild-wasm';
+import { read } from './fs';
 
 let initializing: Promise<void>;
 
@@ -9,6 +10,48 @@ try {
 } catch (e) {
   // noop
 }
+
+const ignoreBareJsPlugin: esbuild.Plugin = {
+  name: 'ignoreBareJs',
+  setup(build) {
+    // * mark as external
+    build.onResolve({ filter: /^(https?:)?\/\// }, ({ path }) => {
+      return {
+        external: true,
+        path,
+      };
+    });
+    // * also mark bare imports as external
+    build.onResolve({ filter: /^[\w@][^:]/ }, ({ path }) => {
+      return {
+        external: true,
+        path,
+      };
+    });
+  },
+};
+
+const customCssPlugin: esbuild.Plugin = {
+  name: 'customCss',
+  setup(build) {
+    const NAMESPACE = 'custom-css';
+    build.onResolve({ filter: /\.css$/ }, (args) => {
+      return {
+        path: args.path,
+        namespace: NAMESPACE,
+      };
+    });
+    build.onLoad({
+      filter: /\.css$/,
+      namespace: NAMESPACE,
+    }, ({ path }) => {
+      return {
+        contents: `export default ${JSON.stringify(read(path))}`,
+        loader: 'js',
+      };
+    });
+  },
+};
 
 /** pending contents to be compiled */
 let pendingContent: string = '';
@@ -21,6 +64,9 @@ const build = async (rawContent: string) => {
   await initializing;
   const currTaskId = ++taskId;
   const result = await esbuild.build({
+    bundle: true,
+    format: 'esm',
+    write: false,
     stdin: {
       contents: `
         function render(
@@ -37,6 +83,10 @@ const build = async (rawContent: string) => {
       loader: 'tsx',
     },
     jsxFactory: 'QuarkElement.h',
+    plugins: [
+      ignoreBareJsPlugin,
+      customCssPlugin,
+    ],
   });
 
   if (currTaskId !== taskId) {

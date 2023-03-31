@@ -1,8 +1,17 @@
 import { debounce } from 'lodash-es';
 import build from './build';
+import {
+  ENTRY_JS,
+  ENTRY_CSS,
+  read,
+  write,
+  getFileId,
+  stripPath,
+} from './fs';
 import * as monaco from 'monaco-editor';
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
+import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
 
 self.MonacoEnvironment = {
 	getWorker: function (_, label) {
@@ -10,6 +19,10 @@ self.MonacoEnvironment = {
 			case 'typescript':
 			case 'javascript':
 				return new tsWorker();
+      case 'css':
+      case 'scss':
+      case 'less':
+        return new cssWorker();
 			default:
 				return new editorWorker();
 		}
@@ -17,56 +30,8 @@ self.MonacoEnvironment = {
 };
 
 const initApp = () => {
-  /** initial build content */
-  let text = `
-  import { QuarkElement, property, customElement } from 'quarkc';
-
-  /*
-    invoke render function to preview and test your custom element,
-    or feel free to write your own render function,
-    embeded render function's implementation shown as below:
-
-    function render(
-      customElemTag: string,
-      root: HTMLElement = document.getElementById('app')
-    ) {
-      const elem = document.createElement(customElemTag);
-      root.innerHTML = '';
-      root.appendChild(elem);
-    }
-  */
-
-  @customElement({ tag: "quark-count" })
-  class MyElement extends QuarkElement {
-    @property({
-      type: Number
-    })
-    count = 0;
-
-    increment = () => {
-      this.count += 1;
-    }
-
-    decrement = () => {
-      this.count -= 1;
-    }
-    
-    render() {
-      return (
-        <div>
-          <div>Counter: {this.count}</div>
-          <button onClick={this.increment}>Increment</button>
-          <button onClick={this.decrement}>Decrement</button>
-        </div>
-      );
-    }
-  }
-
-  render('quark-count');
-  `;
-
   // * ——preview iframe——
-  const iframeElem = document.getElementById('app-preview-iframe') as HTMLIFrameElement;
+  const iframeElem = document.getElementById('preview-iframe') as HTMLIFrameElement;
   let reloadIframeResolve: (value?: unknown) => void;
   const reloadIframe = () => new Promise((resolve) => {
     reloadIframeResolve = resolve;
@@ -83,8 +48,8 @@ const initApp = () => {
   iframeElem.addEventListener('load', onIframeReload);
 
   // * ——first run build——
-  const doBuild = async (rawText: string) => {
-    const result = await build(rawText);
+  const doBuild = async () => {
+    const result = await build(read(ENTRY_JS));
 
     if (result?.outputFiles) {
       const [outputFile] = result.outputFiles;
@@ -95,32 +60,116 @@ const initApp = () => {
     }
   };
   const debouncedDoBuild = debounce(doBuild, 500);
-  doBuild(text);
+  doBuild();
 
-  // * ——initialize editor——
-  const editorElem = document.getElementById('app-editor') as HTMLDivElement;
-  const editor = monaco.editor.create(editorElem!, {
-    theme: 'vs-dark',
-    automaticLayout: true,
-  });
-  let model = monaco.editor.createModel(text, 'javascript');
-  editor.setModel(model);
-  editor.onDidChangeModelContent((event) => {
-    let modifiedText = text;
+  // * ——initialize tabs & editors——
+  const tabs = document.getElementById('code-tabs') as HTMLDivElement;
+  const editors = document.getElementById('code-editors') as HTMLDivElement;
+  const getEditorContainerId = (fileName: string) => `code-editor-${getFileId(fileName)}`;
+  const createTab = (fileName: string) => {
+    const tabElem = document.createElement('div');
+    tabElem.className = 'code-tab';
+    tabElem.textContent = stripPath(fileName);
+    tabElem.addEventListener('click', () => {
+      if (tabElem.classList.contains('active')) {
+        return;
+      }
+      
+      const activeTabElem = document.querySelector('.code-tab.active');
 
-    for (const change of event.changes) {
-      const {
-        rangeOffset,
-        rangeLength,
-        text,
-      } = change;
-      modifiedText = modifiedText.slice(0, rangeOffset)
-        + text
-        + modifiedText.slice(rangeOffset + rangeLength);
+      if (activeTabElem) {
+        activeTabElem.classList.remove('active');
+      }
+      
+      tabElem.classList.add('active');
+
+      const activeEditorContainer = document.querySelector('.code-editor.active');
+
+      if (activeEditorContainer) {
+        activeEditorContainer.classList.remove('active');
+      }
+
+      const editorContainer = document.getElementById(getEditorContainerId(fileName));
+
+      if (editorContainer) {
+        editorContainer.classList.add('active');
+      }
+    });
+    return tabElem;
+  };
+  const createEditor = (
+    fileName: string,
+    language: string,
+  ) => {
+    const editorContainer = document.createElement('div');
+    editorContainer.id = getEditorContainerId(fileName);
+    editorContainer.className = 'code-editor';
+    const editor = monaco.editor.create(editorContainer, {
+      theme: 'vs-dark',
+      automaticLayout: true,
+      language,
+      value: read(fileName),
+    });
+    editor.onDidChangeModelContent((event) => {
+      let modifiedText = read(fileName);
+  
+      for (const change of event.changes) {
+        const {
+          rangeOffset,
+          rangeLength,
+          text,
+        } = change;
+        modifiedText = modifiedText.slice(0, rangeOffset)
+          + text
+          + modifiedText.slice(rangeOffset + rangeLength);
+      }
+      
+      write(fileName, modifiedText);
+      debouncedDoBuild();
+    });
+    return {
+      editorContainer,
+      editor,
+    };
+  };
+  const editorTabs = [
+    {
+      file: ENTRY_JS,
+      language: 'javascript',
+    },
+    {
+      file: ENTRY_CSS,
+      language: 'css',
+    },
+  ].map(({
+    file,
+    language,
+  }, index) => {
+    const tab = createTab(file);
+
+    if (index === 0) {
+      tab.classList.add('active');
+    }
+
+    tabs.appendChild(tab);
+    
+    const {
+      editorContainer,
+      editor,
+    } = createEditor(file, language);
+
+    if (index === 0) {
+      editorContainer.classList.add('active');
     }
     
-    text = modifiedText;
-    debouncedDoBuild(text);
+    editors.appendChild(editorContainer);
+    return {
+      file,
+      language,
+      tab,
+      editor: editor,
+      editorContainer: editorContainer,
+    };
   });
 };
 
