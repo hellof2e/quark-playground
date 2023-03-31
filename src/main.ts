@@ -3,6 +3,7 @@ import build from './build';
 import {
   ENTRY_JS,
   ENTRY_CSS,
+  ENTRY_HTML,
   read,
   write,
   getFileId,
@@ -12,6 +13,7 @@ import * as monaco from 'monaco-editor';
 import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
 import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
 import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
+import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
 
 self.MonacoEnvironment = {
 	getWorker: function (_, label) {
@@ -23,6 +25,10 @@ self.MonacoEnvironment = {
       case 'scss':
       case 'less':
         return new cssWorker();
+      case 'html':
+      case 'handlebars':
+      case 'razor':
+        return new htmlWorker();
 			default:
 				return new editorWorker();
 		}
@@ -45,18 +51,42 @@ const initApp = () => {
       reloadIframeResolve();
     }
   };
+  const updateIframe = (message: {
+    type: 'html' | 'script';
+    payload: string;
+  }) => {
+    iframeElem
+      ?.contentWindow
+      ?.postMessage(message);
+  };
   iframeElem.addEventListener('load', onIframeReload);
 
   // * ——first run build——
-  const doBuild = async () => {
+  const doBuild = async ({
+    language = 'javascript',
+    text = '',
+  } = {}) => {
+    if (language === 'html') {
+      updateIframe({
+        type: 'html',
+        payload: text,
+      });
+      return;
+    }
+    
     const result = await build(read(ENTRY_JS));
 
     if (result?.outputFiles) {
       const [outputFile] = result.outputFiles;
       await reloadIframe();
-      iframeElem
-        ?.contentWindow
-        ?.postMessage(outputFile.text);
+      updateIframe({
+        type: 'script',
+        payload: outputFile.text,
+      });
+      updateIframe({
+        type: 'html',
+        payload: read(ENTRY_HTML),
+      });
     }
   };
   const debouncedDoBuild = debounce(doBuild, 500);
@@ -132,7 +162,8 @@ const initApp = () => {
       editor,
     };
   };
-  const editorTabs = [
+  // * render tabs and editors
+  [
     {
       file: ENTRY_JS,
       language: 'javascript',
@@ -141,6 +172,10 @@ const initApp = () => {
       file: ENTRY_CSS,
       language: 'css',
     },
+    {
+      file: ENTRY_HTML,
+      language: 'html',
+    }
   ].map(({
     file,
     language,

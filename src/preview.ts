@@ -14,8 +14,32 @@ function runScript(content: string) {
   document.head.appendChild(script);
 }
 
+function replaceHtml(content: string) {
+  const app = document.getElementById('app');
+
+  if (app) {
+    app.innerHTML = content;
+  }
+}
+
 window.addEventListener('message', (event) => {
-  runScript(event.data);
+  const {
+    type,
+    payload,
+  } = event.data;
+
+  switch (type) {
+    case 'script': {
+      runScript(payload);
+      break;
+    }
+    case 'html': {
+      replaceHtml(payload);
+      break;
+    }
+    default:
+      // noop
+  }
 });
 
 export {}
