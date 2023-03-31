@@ -1,4 +1,4 @@
-export const ENTRY_JS = './index.tsx';
+export const ENTRY_JS = './index.jsx';
 export const ENTRY_CSS = './index.css';
 export const ENTRY_HTML = './index.html';
 
@@ -13,7 +13,7 @@ import styleSheetContent from './index.css';
   tag: "quark-count",
   style: styleSheetContent,
 })
-class MyElement extends QuarkElement {
+export class MyElement extends QuarkElement {
   @property({
     type: Number
   })
