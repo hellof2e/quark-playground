@@ -3,17 +3,22 @@ export const ENTRY_CSS = './index.css';
 export const ENTRY_HTML = './index.html';
 
 const mem: Record<string, string> = {
-  [ENTRY_JS]: `// feel free to import other modules from their esmodule bundle,
-// served on websites like unpkg.com or esm.sh,
-// for example: import confetti from "https://esm.sh/canvas-confetti@1.6.0"
-import { QuarkElement, property, customElement } from 'quarkc';
+  [ENTRY_JS]: `import {
+  QuarkElement,
+  property,
+  customElement,
+} from 'quarkc';
 import styleSheetContent from './index.css';
+// feel free to import native esmodules, served on websites like unpkg.com or esm.sh
+// for example, uncomment following lines to toggle confetti effect:
+// import confetti from "https://esm.sh/canvas-confetti@1.6.0";
+// confetti();
 
 @customElement({
   tag: "quark-count",
   style: styleSheetContent,
 })
-export class MyElement extends QuarkElement {
+class MyElement extends QuarkElement {
   @property({
     type: Number
   })
@@ -37,10 +42,42 @@ export class MyElement extends QuarkElement {
     );
   }
 }
-  `,
+`,
   [ENTRY_CSS]: `.count {
-    color: #a8f;
-  }`,
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.count-btn {
+  border-radius: 8px;
+  border: 1px dashed transparent;
+  padding: 8px 16px;
+  font-size: 16px;
+  font-weight: bold;
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.25s;  
+}
+
+.count-btn--inc {
+  color: #fff;
+  background-color: #a8f;
+}
+
+.count-btn--dec {
+  margin-left: 4px;
+  color: #fff;
+  background-color: #8af;
+}
+
+.count-btn:hover {
+  filter: saturate(2);
+}
+
+.count-btn:focus, .count-btn:focus-visible {
+  border-color: inherit;
+}
+`,
   [ENTRY_HTML]: `<quark-count count="0"></quark-count>`
 };
 

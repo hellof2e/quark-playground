@@ -58,7 +58,7 @@ let pendingContent: string = '';
 /** curr task id */
 let taskId = 0;
 
-/** 请求构建 */
+/** request for building */
 const build = async (rawContent: string) => {
   pendingContent = rawContent;
   await initializing;

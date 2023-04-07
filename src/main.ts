@@ -5,35 +5,10 @@ import {
   ENTRY_CSS,
   ENTRY_HTML,
   read,
-  write,
   getFileId,
   stripPath,
 } from './fs';
-import * as monaco from 'monaco-editor';
-import tsWorker from 'monaco-editor/esm/vs/language/typescript/ts.worker?worker';
-import editorWorker from 'monaco-editor/esm/vs/editor/editor.worker?worker';
-import cssWorker from 'monaco-editor/esm/vs/language/css/css.worker?worker';
-import htmlWorker from 'monaco-editor/esm/vs/language/html/html.worker?worker';
-
-self.MonacoEnvironment = {
-	getWorker: function (_, label) {
-		switch (label) {
-			case 'typescript':
-			case 'javascript':
-				return new tsWorker();
-      case 'css':
-      case 'scss':
-      case 'less':
-        return new cssWorker();
-      case 'html':
-      case 'handlebars':
-      case 'razor':
-        return new htmlWorker();
-			default:
-				return new editorWorker();
-		}
-	}
-};
+import createEditor from './editor';
 
 const initApp = () => {
   // * ——preview iframe——
@@ -96,7 +71,7 @@ const initApp = () => {
   const tabs = document.getElementById('code-tabs') as HTMLDivElement;
   const editors = document.getElementById('code-editors') as HTMLDivElement;
   const getEditorContainerId = (fileName: string) => `code-editor-${getFileId(fileName)}`;
-  const createTab = (fileName: string) => {
+  const createTabElem = (fileName: string) => {
     const tabElem = document.createElement('div');
     tabElem.className = 'code-tab';
     tabElem.textContent = stripPath(fileName);
@@ -127,35 +102,18 @@ const initApp = () => {
     });
     return tabElem;
   };
-  const createEditor = (
+  const createEditorElem = (
     fileName: string,
     language: string,
   ) => {
     const editorContainer = document.createElement('div');
     editorContainer.id = getEditorContainerId(fileName);
     editorContainer.className = 'code-editor';
-    const editor = monaco.editor.create(editorContainer, {
-      theme: 'vs-dark',
-      automaticLayout: true,
+    const editor = createEditor({
+      fileName,
       language,
-      value: read(fileName),
-    });
-    editor.onDidChangeModelContent((event) => {
-      let modifiedText = read(fileName);
-  
-      for (const change of event.changes) {
-        const {
-          rangeOffset,
-          rangeLength,
-          text,
-        } = change;
-        modifiedText = modifiedText.slice(0, rangeOffset)
-          + text
-          + modifiedText.slice(rangeOffset + rangeLength);
-      }
-      
-      write(fileName, modifiedText);
-      debouncedDoBuild();
+      container: editorContainer,
+      onChange: () => debouncedDoBuild(),
     });
     return {
       editorContainer,
@@ -180,7 +138,7 @@ const initApp = () => {
     file,
     language,
   }, index) => {
-    const tab = createTab(file);
+    const tab = createTabElem(file);
 
     if (index === 0) {
       tab.classList.add('active');
@@ -191,7 +149,7 @@ const initApp = () => {
     const {
       editorContainer,
       editor,
-    } = createEditor(file, language);
+    } = createEditorElem(file, language);
 
     if (index === 0) {
       editorContainer.classList.add('active');
