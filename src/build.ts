@@ -1,5 +1,8 @@
 import * as esbuild from 'esbuild-wasm';
-import { read } from './fs';
+import {
+  cleanPath,
+  read,
+} from './fs';
 
 let initializing: Promise<void>;
 
@@ -35,18 +38,31 @@ const customCssPlugin: esbuild.Plugin = {
   name: 'customCss',
   setup(build) {
     const NAMESPACE = 'custom-css';
-    build.onResolve({ filter: /\.css$/ }, (args) => {
+    build.onResolve({ filter: /\.css(?:$|\?)/ }, (args) => {
       return {
         path: args.path,
         namespace: NAMESPACE,
       };
     });
     build.onLoad({
-      filter: /\.css$/,
+      filter: /.*/,
       namespace: NAMESPACE,
     }, ({ path }) => {
+      const code = read(cleanPath(path));
+      let contents = `export default ${JSON.stringify(code)};\n`;
+
+      // ? enable stylesheet inject by default
+      // if (!/[&?]inline\b/.test(path)) {
+      //   // * inject stylesheet into document
+      //   contents += `;(function () {
+      //     const style = document.createElement('style');
+      //     style.textContent = ${JSON.stringify(code)};
+      //     document.head.appendChild(style);
+      //   })()`;
+      // }
+      
       return {
-        contents: `export default ${JSON.stringify(read(path))}`,
+        contents,
         loader: 'js',
       };
     });
@@ -68,18 +84,7 @@ const build = async (rawContent: string) => {
     format: 'esm',
     write: false,
     stdin: {
-      contents: `
-        function render(
-          customElemTag,
-          root = document.getElementById('app')
-        ) {
-          const elem = document.createElement(customElemTag);
-          root.innerHTML = '';
-          root.appendChild(elem);
-        }
-
-        ${pendingContent}
-      `,
+      contents: pendingContent,
       loader: 'tsx',
     },
     jsxFactory: 'QuarkElement.h',
