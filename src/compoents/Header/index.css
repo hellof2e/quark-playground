@@ -3,7 +3,9 @@
   z-index: 30;
   top: 0px;
   position: relative;
-  min-width: 860px;
+  width: 100%;
+  background-color: white;
+  border-bottom: 1px solid #999;
 }
 .sticky {
     position: sticky;

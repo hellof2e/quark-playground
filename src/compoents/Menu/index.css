@@ -1,5 +1,20 @@
 .app_menu {
     width: 300px;
     height: 100vh;
-    background-color: #999;
+    background-color: #666;
+    color: white;
+    padding: 20px;
+}
+.menu_item_name {
+    font-size: 18px;
+    margin-top: 30px;
+}
+.menu_item_sub {
+    display: flex;
+    flex-direction: column;
+}
+.menu_item_sub a {
+    margin-top: 10px;
+    font-size: 16px;
+    cursor: pointer;
 }
