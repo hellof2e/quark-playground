@@ -1,12 +1,12 @@
 .app_menu {
     width: 300px;
     height: 100vh;
-    background-color: #666;
-    color: white;
+    background-color: #696969;
+    color: #f5f5f5;
     padding: 20px;
 }
 .menu_item_name {
-    font-size: 18px;
+    font-size: 19px;
     margin-top: 30px;
 }
 .menu_item_sub {
@@ -15,6 +15,26 @@
 }
 .menu_item_sub a {
     margin-top: 10px;
-    font-size: 16px;
+    font-size: 17px;
     cursor: pointer;
+}
+.menu_item_sub a:link {
+    color: #f5f5f5; /*未访问的链接颜色*/
+}
+
+.menu_item_sub a:visited {
+    color: #f5f5f5; /*已访问的链接颜色*/
+}
+
+.menu_item_sub a:hover {
+    color: #f5f5f5; /*鼠标移动到链接的颜色*/
+    text-decoration: none;
+}
+
+.menu_item_sub a:active {
+    color: #f5f5f5; /*鼠标点击时的颜色*/
+}
+
+.menu_item_sub a {
+    text-decoration: none; /*去掉下划线*/
 }

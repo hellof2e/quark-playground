@@ -7,60 +7,71 @@ interface MenuItem {
 @customElement({ tag: "app-menu", style })
 export default class Menu extends QuarkElement {
 
-	@state()
-	menus: MenuItem [] = [{
-		name: 'BASICS',
-		childrens: [
+    @state()
+    menus: MenuItem [] = [{
+        name: 'BASICS',
+        childrens: [
             {
                 name: 'Hello World',
-                link: './'
+                link: '/'
             },
             {
                 name: 'Defining',
-                link: './'
+                link: '/'
             },
             {
                 name: 'Rendering',
-                link: './'
+                link: '/'
             }
         ]
-	},{
-		name: 'REACTIVE PROPERTIES',
-		childrens: [
+    },{
+        name: 'REACTIVE PROPERTIES',
+        childrens: [
             {
                 name: 'State',
-                link: './'
+                link: '/'
             },
             {
                 name: 'Props',
-                link: './'
+                link: '/'
             },
             {
                 name: 'Skill',
-                link: './'
+                link: '/'
             }
         ]
-	},]
+    },]
 
-  componentDidMount(): void {}
-  renderMenu = (memu: MenuItem) => {
-    return <div class="menu_item">
+    @state()
+    currentMenuName = 'Hello World'
+
+    handleMenuClck= (child) => {
+        this.currentMenuName = child.name
+        
+    }
+
+    componentDidMount(): void {}
+    renderMenu = (memu: MenuItem) => {
+      return <div class="menu_item">
         <div class="menu_item_name">{memu.name}</div>
         <div class="menu_item_sub">
             {memu.childrens.map((child) => {
-                return <a>{child.name}</a>
+                const isCurrent = this.currentMenuName === child.name
+                return <a onClick={() => {
+                    this.handleMenuClck(child);
+                }} style={{fontWeight: isCurrent ? 800 : 400, color: isCurrent ? 'white': '#f5f5f5'}}>{child.name}</a>
             })}
         </div>
         
     </div>
-  }
-  render() {
-    return (
+   }
+   render() {
+     return (
 		<nav class="app_menu">
 			{this.menus.map((menu) => {
                 return this.renderMenu(menu)
             })}
   		</nav>
-    );
+     );
   }
 }
