@@ -98,6 +98,11 @@ export const getFileId = (path: string) => (
     .replace(/[^\w-:.]/g, '_')
 );
 
+/** remove query and hash */
+export const cleanPath = (path: string): string => path
+  .replace(/#.*$/s, '')
+  .replace(/\?.*$/s, '');
+
 /** read file content from memory */
 export const read = (path: string) => mem[getFileKey(path)];
 /** write content to file in memory */
