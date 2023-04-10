@@ -1,4 +1,5 @@
 import { debounce } from 'lodash-es';
+import "./compoents/Header"
 import build from './build';
 import {
   ENTRY_JS,
