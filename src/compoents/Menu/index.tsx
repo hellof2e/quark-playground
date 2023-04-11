@@ -1,5 +1,5 @@
 import { QuarkElement, customElement, state } from "quarkc";
-import style from "./index.css"
+import style from "./index.css?inline"
 interface MenuItem {
     name: string
     childrens: {name: string; link: string}[]

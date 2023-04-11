@@ -1,10 +1,13 @@
 import HelloWorld from '../views/hello-world';
+import Defining from '../views/defining';
 
 const codeEnum = {
-  'hello-world': HelloWorld
+  'hello-world': HelloWorld,
+  'defining': Defining
 }
-const hashValue = window.location.href.split('/#/')[1] ?  window.location.href.split('/#/')[1] : 'hello-world'
-
+const getHashValue = () => {
+    return window.location.href.split('/#/')[1] ?  window.location.href.split('/#/')[1] : 'hello-world';
+}
 export const stripPath = (path: string) => path.replace(/^[\.\\\/]*/, '');
 const getFileKey = (path: string) => {
   if (/^\.\//.test(path)) {
@@ -24,11 +27,13 @@ export const cleanPath = (path: string): string => path
   .replace(/\?.*$/s, '');
 
 export const read = (key: string) => {
-    const entryKey = getFileKey(key)
+    const entryKey = getFileKey(key);
+    const hashValue = getHashValue();
     return codeEnum[hashValue][entryKey]
 };
 export const write = (key: string, content: string) => {
   const entryKey = getFileKey(key)
+  const hashValue = getHashValue();
   codeEnum[hashValue][entryKey] = content
 };
 

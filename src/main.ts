@@ -1,4 +1,5 @@
 import { debounce } from 'lodash-es';
+import { EditorView } from 'codemirror';
 import "./compoents/Header"
 import "./compoents/Menu"
 import build from './build';
@@ -13,7 +14,6 @@ import {
   ENTRY_HTML
 } from './const'
 import createEditor from './compoents/Editor/editor';
-
 
 const initApp = () => {
   // * ——preview iframe——
@@ -58,7 +58,6 @@ const initApp = () => {
 
     if (result?.outputFiles) {
       const [outputFile] = result.outputFiles;
-      console.log(outputFile.text)
       await reloadIframe();
       updateIframe({
         type: 'script',
@@ -79,6 +78,15 @@ const initApp = () => {
   // * ——initialize tabs & editors——
   const tabs = document.getElementById('code-tabs') as HTMLDivElement;
   const editors = document.getElementById('code-editors') as HTMLDivElement;
+  let editorInstance: {
+    ENTRY_JS?: EditorView,
+    ENTRY_HTML?: EditorView,
+    ENTRY_CSS?: EditorView
+  } = {
+    ENTRY_JS: undefined,
+    ENTRY_HTML: undefined,
+    ENTRY_CSS: undefined
+  };
   const getEditorContainerId = (fileName: string) => `code-editor-${getFileId(fileName)}`;
   const createTabElem = (fileName: string) => {
     const tabElem = document.createElement('div');
@@ -173,6 +181,7 @@ const initApp = () => {
     }
     
     editors.appendChild(editorContainer);
+    editorInstance[file] = editor;
     return {
       file,
       language,
@@ -183,9 +192,18 @@ const initApp = () => {
   });
 
   window.addEventListener('hashchange', (e) => {
-    const hashValue = e.newURL.split('/#/')[1] ? e.newURL.split('/#/')[1] : 'hello-world'
-    
+    // 更新 editor
+    [ENTRY_JS, ENTRY_CSS, ENTRY_HTML].map((key) => {
+      const transaction = editorInstance[key].state.update({changes: {from: 0, to: editorInstance[key].state.doc.length, insert: read(key)}})
+      editorInstance[key].dispatch(transaction)
+    })
+    doBuild();
   }, false)
 };
+
+const hashValue = window.location.href.split('/#/')[1] ?  window.location.href.split('/#/')[1] : undefined
+if(!hashValue) {
+  window.location.href = `${ window.location.href}#/hello-world`
+}
 
 document.addEventListener('DOMContentLoaded', initApp);

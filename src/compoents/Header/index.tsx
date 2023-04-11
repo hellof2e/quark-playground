@@ -1,5 +1,5 @@
 import { QuarkElement, customElement, state } from "quarkc";
-import style from "./index.css"
+import style from "./index.css?inline"
 
 @customElement({ tag: "app-header", style })
 export default class Header extends QuarkElement {

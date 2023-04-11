@@ -31,7 +31,7 @@ body {
 #code-tabs {
   flex-shrink: 0;
   display: flex;
-  padding: 8px 0 8px 62px;
+  padding: 8px 0 8px 8px;
   background-color: var(--bg-color);
 }
 
