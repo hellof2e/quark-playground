@@ -2,7 +2,7 @@ import * as esbuild from 'esbuild-wasm';
 import {
   cleanPath,
   read,
-} from './fs';
+} from './utils';
 
 let initializing: Promise<void>;
 
@@ -60,7 +60,6 @@ const customCssPlugin: esbuild.Plugin = {
       //     document.head.appendChild(style);
       //   })()`;
       // }
-      
       return {
         contents,
         loader: 'js',

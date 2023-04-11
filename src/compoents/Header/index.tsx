@@ -5,10 +5,7 @@ import style from "./index.css"
 export default class Header extends QuarkElement {
 
 	@state()
-	menus = [{
-		name: 'home',
-		link: '/'
-	}]
+	menus = []
 
   componentDidMount(): void {}
   

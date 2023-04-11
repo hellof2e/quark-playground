@@ -5,7 +5,7 @@
   position: relative;
   width: 100%;
   background-color: white;
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid #f5f5f5;
 }
 .sticky {
     position: sticky;

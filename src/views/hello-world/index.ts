@@ -1,6 +1,4 @@
-export const ENTRY_JS = './index.tsx';
-export const ENTRY_CSS = './index.css';
-export const ENTRY_HTML = './index.html';
+import {ENTRY_JS, ENTRY_HTML, ENTRY_CSS} from '../../const'
 
 const mem: Record<string, string> = {
   [ENTRY_JS]: `import {
@@ -9,10 +7,6 @@ const mem: Record<string, string> = {
   customElement,
 } from 'quarkc';
 import styleSheetContent from './index.css';
-// feel free to import native esmodules, served on websites like unpkg.com or esm.sh
-// for example, uncomment following lines to toggle confetti effect:
-// import confetti from "https://esm.sh/canvas-confetti@1.6.0";
-// confetti();
 
 @customElement({
   tag: "quark-count",
@@ -81,31 +75,4 @@ class MyElement extends QuarkElement {
   [ENTRY_HTML]: `<quark-count count="0"></quark-count>`
 };
 
-/** remove leading ./ */
-export const stripPath = (path: string) => path.replace(/^[\.\\\/]*/, '');
-/** ensure path starts with ./ and used as memory file key */
-const getFileKey = (path: string) => {
-  if (/^\.\//.test(path)) {
-    return path;
-  }
-
-  return `./${stripPath(path)}`;
-};
-/** get valid file id —— used for html element id */
-export const getFileId = (path: string) => (
-  stripPath(path)
-    .replace(/^[^a-zA-Z]/, '')
-    .replace(/[^\w-:.]/g, '_')
-);
-
-/** remove query and hash */
-export const cleanPath = (path: string): string => path
-  .replace(/#.*$/s, '')
-  .replace(/\?.*$/s, '');
-
-/** read file content from memory */
-export const read = (path: string) => mem[getFileKey(path)];
-/** write content to file in memory */
-export const write = (path: string, content: string) => {
-  mem[getFileKey(path)] = content;
-};
+export default mem;

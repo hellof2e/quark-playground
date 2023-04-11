@@ -13,15 +13,15 @@ export default class Menu extends QuarkElement {
         childrens: [
             {
                 name: 'Hello World',
-                link: '/'
+                link: '/#/hello-world'
             },
             {
                 name: 'Defining',
-                link: '/'
+                link: '/#/defining'
             },
             {
                 name: 'Rendering',
-                link: '/'
+                link: '/#/rendering'
             }
         ]
     },{
@@ -29,15 +29,15 @@ export default class Menu extends QuarkElement {
         childrens: [
             {
                 name: 'State',
-                link: '/'
+                link: '/#/state'
             },
             {
                 name: 'Props',
-                link: '/'
+                link: '/#/props'
             },
             {
                 name: 'Skill',
-                link: '/'
+                link: '/#/skill'
             }
         ]
     },]
@@ -47,7 +47,7 @@ export default class Menu extends QuarkElement {
 
     handleMenuClck= (child) => {
         this.currentMenuName = child.name
-        
+
     }
 
     componentDidMount(): void {}
@@ -57,7 +57,7 @@ export default class Menu extends QuarkElement {
         <div class="menu_item_sub">
             {memu.childrens.map((child) => {
                 const isCurrent = this.currentMenuName === child.name
-                return <a onClick={() => {
+                return <a href={child.link} onClick={() => {
                     this.handleMenuClck(child);
                 }} style={{fontWeight: isCurrent ? 800 : 400, color: isCurrent ? 'white': '#f5f5f5'}}>{child.name}</a>
             })}

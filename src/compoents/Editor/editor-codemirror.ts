@@ -13,7 +13,8 @@ import { html } from '@codemirror/lang-html';
 import {
   read,
   write,
-} from './fs';
+} from '../../utils';
+import { ENTRY_CSS, ENTRY_JS } from '../../const';
 
 const getLangExt = (language: string) => {
   switch (language) {
@@ -40,7 +41,7 @@ export default function createEditor({
   fileName: string,
   language: string,
   container: HTMLElement,
-  onChange: (text: string) => void,
+  onChange: (fileName: string, text: string) => void,
 }) {
   const exts = [
     basicSetup,
@@ -69,7 +70,7 @@ export default function createEditor({
         if (update.docChanged) {
           const modifiedText = update.state.doc.toString();
           write(fileName, modifiedText);
-          onChange(modifiedText);
+          onChange(fileName, modifiedText);
         }
       })
     ],

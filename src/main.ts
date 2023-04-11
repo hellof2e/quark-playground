@@ -3,14 +3,17 @@ import "./compoents/Header"
 import "./compoents/Menu"
 import build from './build';
 import {
-  ENTRY_JS,
-  ENTRY_CSS,
-  ENTRY_HTML,
   read,
   getFileId,
   stripPath,
-} from './fs';
-import createEditor from './editor';
+} from './utils';
+import {
+  ENTRY_JS,
+  ENTRY_CSS,
+  ENTRY_HTML
+} from './const'
+import createEditor from './compoents/Editor/editor';
+
 
 const initApp = () => {
   // * ——preview iframe——
@@ -55,6 +58,7 @@ const initApp = () => {
 
     if (result?.outputFiles) {
       const [outputFile] = result.outputFiles;
+      console.log(outputFile.text)
       await reloadIframe();
       updateIframe({
         type: 'script',
@@ -66,8 +70,11 @@ const initApp = () => {
       });
     }
   };
-  const debouncedDoBuild = debounce(doBuild, 500);
+
+  const debounceBuild = debounce(doBuild, 500);
+  // 首次构建
   doBuild();
+  
 
   // * ——initialize tabs & editors——
   const tabs = document.getElementById('code-tabs') as HTMLDivElement;
@@ -115,7 +122,15 @@ const initApp = () => {
       fileName,
       language,
       container: editorContainer,
-      onChange: () => debouncedDoBuild(),
+      onChange: (fileName: string, text: string) => {
+        let language = 'javascript'
+        if (fileName === ENTRY_HTML) {
+          language = 'html'
+        } else if (fileName === ENTRY_CSS) {
+          language = 'css'
+        }
+        debounceBuild({language, text})
+      }
     });
     return {
       editorContainer,
@@ -166,6 +181,11 @@ const initApp = () => {
       editorContainer: editorContainer,
     };
   });
+
+  window.addEventListener('hashchange', (e) => {
+    const hashValue = e.newURL.split('/#/')[1] ? e.newURL.split('/#/')[1] : 'hello-world'
+    
+  }, false)
 };
 
 document.addEventListener('DOMContentLoaded', initApp);
