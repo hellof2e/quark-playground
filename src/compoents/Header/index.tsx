@@ -5,7 +5,13 @@ import style from "./index.css?inline"
 export default class Header extends QuarkElement {
 
 	@state()
-	menus = []
+	menus = [{
+		name: 'Quark',
+		link: 'https://quark.hellobike.com/#/'
+	},{
+		name: 'Quark Design',
+		link: 'https://quark-design.hellobike.com/#/'
+	}]
 
   componentDidMount(): void {}
   
