@@ -1,46 +1,11 @@
 import { QuarkElement, customElement, state } from "quarkc";
 import style from "./index.css?inline"
-interface MenuItem {
-    name: string
-    childrens: {name: string; link: string}[]
-}
+import { MenuItem, menus } from "../../config";
 @customElement({ tag: "app-menu", style })
 export default class Menu extends QuarkElement {
 
     @state()
-    menus: MenuItem [] = [{
-        name: 'BASICS',
-        childrens: [
-            {
-                name: 'Hello World',
-                link: '/#/hello-world'
-            },
-            {
-                name: 'Defining',
-                link: '/#/defining'
-            },
-            {
-                name: 'Rendering',
-                link: '/#/rendering'
-            }
-        ]
-    },{
-        name: 'REACTIVE PROPERTIES',
-        childrens: [
-            {
-                name: 'State',
-                link: '/#/state'
-            },
-            {
-                name: 'Props',
-                link: '/#/props'
-            },
-            {
-                name: 'Skill',
-                link: '/#/skill'
-            }
-        ]
-    },]
+    menus: MenuItem [] = menus
 
     @state()
     currentMenuName = 'Hello World'
