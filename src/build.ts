@@ -1,4 +1,5 @@
 import * as esbuild from 'esbuild-wasm';
+import wasmURL from 'esbuild-wasm/esbuild.wasm?url';
 import {
   cleanPath,
   read,
@@ -8,7 +9,7 @@ let initializing: Promise<void>;
 
 try {
   initializing = esbuild.initialize({
-    wasmURL: '/wasm-files/esbuild.wasm',
+    wasmURL,
   });
 } catch (e) {
   // noop
