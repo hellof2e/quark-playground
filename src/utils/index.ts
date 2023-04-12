@@ -1,9 +1,9 @@
 import HelloWorld from '../views/hello-world';
-import Defining from '../views/defining';
+import FullComponent from '../views/full-component';
 
 const codeEnum = {
   'hello-world': HelloWorld,
-  'defining': Defining
+  'full-component': FullComponent
 }
 const getHashValue = () => {
     return window.location.href.split('/#/')[1] ?  window.location.href.split('/#/')[1] : 'hello-world';
