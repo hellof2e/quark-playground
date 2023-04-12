@@ -16,7 +16,7 @@ function runScript(content: string) {
 
 function replaceHtml(content: string) {
   const app = document.getElementById('app');
-
+  
   if (app) {
     app.innerHTML = content;
   }

@@ -23,7 +23,7 @@ class QuarkGreeting extends QuarkElement {
   }
 }
 `,
-  [ENTRY_CSS]: `p {
+  [ENTRY_CSS]: `:host p {
   color: #0088ff
 }
 `,

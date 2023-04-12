@@ -3,7 +3,7 @@ import {ENTRY_JS, ENTRY_HTML, ENTRY_CSS} from '../../const'
 const mem: Record<string, string> = {
   [ENTRY_JS]: `import {
   QuarkElement,
-  property,
+  state,
   customElement,
 } from 'quarkc';
 import style from './index.css';
@@ -13,49 +13,10 @@ import style from './index.css';
   style
 })
 class QuarkCount extends QuarkElement {
-  @property({
+  @state({
     type: Number
   })
   count = 0;
-
-  @property({
-    type: Boolean
-  })
-  disabletick = false;
-
-  componentDidMount() {
-    if (!this.disabletick) {
-      this.interval = setInterval(() => this.tick(), 1000)
-    }
-  }
-
-  shouldComponentUpdate(
-    propName: string,
-    oldValue: string | boolean,
-    newValue: string | boolean
-  ): boolean {
-    if (propName === "xxx") {
-      // 阻止更新
-      return false
-    }
-    return true;
-  }
-
-  componentDidUpdate(propName: string, oldValue: string, newValue: string) {
-    // 已更新
-  }
-
-  componentWillUnmount() {
-    // 清除副作用
-    if (this.interval) {
-      clearInterval(this.interval)
-    }
-  }
-
-  tick() {
-    this.count++
-  }
-
   increment = () => {
     this.count += 1;
   }
@@ -110,11 +71,7 @@ class QuarkCount extends QuarkElement {
   border-color: inherit;
 }
 `,
-  [ENTRY_HTML]: `
-  <quark-count count="0"></quark-count>
-  <br/>
-  <quark-count count="1" disabletick></quark-count>
-  `
+  [ENTRY_HTML]: `<quark-count></quark-count>`
 };
 
 export default mem;

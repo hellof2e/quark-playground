@@ -21,40 +21,7 @@ class QuarkCount extends QuarkElement {
   @property({
     type: Boolean
   })
-  disabletick = false;
-
-  componentDidMount() {
-    if (!this.disabletick) {
-      this.interval = setInterval(() => this.tick(), 1000)
-    }
-  }
-
-  shouldComponentUpdate(
-    propName: string,
-    oldValue: string | boolean,
-    newValue: string | boolean
-  ): boolean {
-    if (propName === "xxx") {
-      // 阻止更新
-      return false
-    }
-    return true;
-  }
-
-  componentDidUpdate(propName: string, oldValue: string, newValue: string) {
-    // 已更新
-  }
-
-  componentWillUnmount() {
-    // 清除副作用
-    if (this.interval) {
-      clearInterval(this.interval)
-    }
-  }
-
-  tick() {
-    this.count++
-  }
+  disable = false;
 
   increment = () => {
     this.count += 1;
@@ -109,11 +76,17 @@ class QuarkCount extends QuarkElement {
 :host .count-btn:focus, .count-btn:focus-visible {
   border-color: inherit;
 }
+:host([disable]) .count-btn{
+    cursor: not-allowed;
+    opacity: 0.68;
+    user-select: none;
+    color: #BCC4CC;
+}
 `,
   [ENTRY_HTML]: `
   <quark-count count="0"></quark-count>
   <br/>
-  <quark-count count="1" disabletick></quark-count>
+  <quark-count count="1" disable></quark-count>
   `
 };
 

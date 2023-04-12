@@ -18,12 +18,12 @@ export const menus: MenuItem [] = [{
     name: 'REACTIVE PROPERTIES',
     childrens: [
         {
-            name: 'State',
-            link: '/#/state'
+            name: 'State reactive',
+            link: '/#/state-reactive'
         },
         {
-            name: 'Props',
-            link: '/#/props'
+            name: 'Props reactive',
+            link: '/#/props-reactive'
         },
         {
             name: 'Skill guid',
