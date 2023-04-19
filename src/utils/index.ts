@@ -9,6 +9,7 @@ import RepeatingTemplates from '../views/repeating-templates';
 import SlottingChildren from '../views/slotting-children';
 import CssInJs from '../views/css-in-js';
 import Fragment from '../views/fragment';
+import NativeEvent from '../views/native-event';
 
 const codeEnum = {
   'hello-world': HelloWorld,
@@ -22,6 +23,7 @@ const codeEnum = {
   'slotting-children': SlottingChildren,
   'css-in-js': CssInJs,
   'fragment': Fragment,
+  'native-event': NativeEvent,
 }
 const getHashValue = () => {
     return window.location.href.split('/#/')[1] ?  window.location.href.split('/#/')[1] : 'hello-world';
