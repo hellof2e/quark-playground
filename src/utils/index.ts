@@ -3,6 +3,7 @@ import FullComponent from '../views/full-component';
 import StateReactive from '../views/state-reactive';
 import PropsReactive from '../views/props-reactive';
 import SkillGuid from '../views/skill-guid';
+import ExpressionTypes from '../views/expression-types';
 
 const codeEnum = {
   'hello-world': HelloWorld,
@@ -10,6 +11,7 @@ const codeEnum = {
   'state-reactive': StateReactive,
   'props-reactive': PropsReactive,
   'skill-guid': SkillGuid,
+  'expression-types': ExpressionTypes,
 }
 const getHashValue = () => {
     return window.location.href.split('/#/')[1] ?  window.location.href.split('/#/')[1] : 'hello-world';
