@@ -16,11 +16,11 @@ import style from './index.css';
 class MyElement extends QuarkElement {
 
   onClick = () => {
-    console.log("按钮被点击")
+    alert("click")
   }
 
   onInput = () => {
-    console.log("input 事件")
+    alert("input")
   }
   
   render() {
