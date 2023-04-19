@@ -9,10 +9,10 @@ const mem: Record<string, string> = {
 import style from './index.css';
 
 @customElement({
-  tag: "quark-element",
+  tag: "my-element",
   style
 })
-class QuarkEle extends QuarkElement {
+class MyElement extends QuarkElement {
   @property()
   bodytext = 'Text in child expression.';
 
@@ -44,7 +44,7 @@ class QuarkEle extends QuarkElement {
 }
 `,
   [ENTRY_CSS]: `:host{}`,
-  [ENTRY_HTML]: `<quark-element></quark-element>`
+  [ENTRY_HTML]: `<my-element></my-element>`
 };
 
 export default mem;

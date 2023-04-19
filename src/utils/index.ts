@@ -4,6 +4,7 @@ import StateReactive from '../views/state-reactive';
 import PropsReactive from '../views/props-reactive';
 import SkillGuid from '../views/skill-guid';
 import ExpressionTypes from '../views/expression-types';
+import ConditionalTemplates from '../views/conditional-templates';
 
 const codeEnum = {
   'hello-world': HelloWorld,
@@ -12,6 +13,7 @@ const codeEnum = {
   'props-reactive': PropsReactive,
   'skill-guid': SkillGuid,
   'expression-types': ExpressionTypes,
+  'conditional-templates': ConditionalTemplates,
 }
 const getHashValue = () => {
     return window.location.href.split('/#/')[1] ?  window.location.href.split('/#/')[1] : 'hello-world';

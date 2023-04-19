@@ -9,7 +9,7 @@ const mem: Record<string, string> = {
 import style from './index.css';
 
 @customElement({
-  tag: "quark-count",
+  tag: "my-element",
   style
 })
 class QuarkCount extends QuarkElement {
@@ -71,7 +71,7 @@ class QuarkCount extends QuarkElement {
   border-color: inherit;
 }
 `,
-  [ENTRY_HTML]: `<quark-count></quark-count>`
+  [ENTRY_HTML]: `<my-element></my-element>`
 };
 
 export default mem;
