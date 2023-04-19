@@ -1,0 +1,40 @@
+import {ENTRY_JS, ENTRY_HTML, ENTRY_CSS} from '../../const'
+
+const mem: Record<string, string> = {
+  [ENTRY_JS]: `import {
+  QuarkElement,
+  property,
+  customElement,
+} from 'quarkc';
+import style from './index.css';
+
+@customElement({
+  tag: "my-element",
+  style
+})
+class MyElement extends QuarkElement {
+  
+  render() {
+    return (
+      <div>
+        <div>
+            <slot></slot>
+        </div>
+        <div>
+            <slot name="custom"></slot>
+        </div>
+      </div>
+    );
+  }
+}
+`,
+  [ENTRY_CSS]: ``,
+  [ENTRY_HTML]: `
+<my-element> Default </my-element>
+<my-element> 
+    <span slot="custom"> Custom </span> 
+</my-element>
+  `
+};
+
+export default mem;

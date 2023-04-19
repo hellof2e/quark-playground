@@ -6,6 +6,7 @@ import SkillGuid from '../views/skill-guid';
 import ExpressionTypes from '../views/expression-types';
 import ConditionalTemplates from '../views/conditional-templates';
 import RepeatingTemplates from '../views/repeating-templates';
+import SlottingChildren from '../views/slotting-children';
 
 const codeEnum = {
   'hello-world': HelloWorld,
@@ -15,7 +16,7 @@ const codeEnum = {
   'skill-guid': SkillGuid,
   'expression-types': ExpressionTypes,
   'conditional-templates': ConditionalTemplates,
-  'repeating-templates': RepeatingTemplates,
+  'slotting-children': SlottingChildren,
 }
 const getHashValue = () => {
     return window.location.href.split('/#/')[1] ?  window.location.href.split('/#/')[1] : 'hello-world';
