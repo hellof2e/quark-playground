@@ -8,6 +8,7 @@ import ConditionalTemplates from '../views/conditional-templates';
 import RepeatingTemplates from '../views/repeating-templates';
 import SlottingChildren from '../views/slotting-children';
 import CssInJs from '../views/css-in-js';
+import Fragment from '../views/fragment';
 
 const codeEnum = {
   'hello-world': HelloWorld,
@@ -20,6 +21,7 @@ const codeEnum = {
   'repeating-templates': RepeatingTemplates,
   'slotting-children': SlottingChildren,
   'css-in-js': CssInJs,
+  'fragment': Fragment,
 }
 const getHashValue = () => {
     return window.location.href.split('/#/')[1] ?  window.location.href.split('/#/')[1] : 'hello-world';

@@ -54,8 +54,8 @@ export const menus: MenuItem [] = [{
             link: '/#/css-in-js'
         },
         {
-            name: 'Fragement',
-            link: '/#/fragement'
+            name: 'Fragment',
+            link: '/#/fragment'
         }
     ]
 },{
