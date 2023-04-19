@@ -10,6 +10,7 @@ import SlottingChildren from '../views/slotting-children';
 import CssInJs from '../views/css-in-js';
 import Fragment from '../views/fragment';
 import NativeEvent from '../views/native-event';
+import CustomEvent from '../views/custom-event';
 
 const codeEnum = {
   'hello-world': HelloWorld,
@@ -24,6 +25,7 @@ const codeEnum = {
   'css-in-js': CssInJs,
   'fragment': Fragment,
   'native-event': NativeEvent,
+  'custom-event': CustomEvent,
 }
 const getHashValue = () => {
     return window.location.href.split('/#/')[1] ?  window.location.href.split('/#/')[1] : 'hello-world';
