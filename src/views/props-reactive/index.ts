@@ -12,7 +12,7 @@ import style from './index.css';
   tag: "my-element",
   style
 })
-class QuarkCount extends QuarkElement {
+class MyElement extends QuarkElement {
   @property({
     type: Number
   })
