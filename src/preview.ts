@@ -59,7 +59,7 @@ function processHTML(rawContent: string) {
   }
 
   const content = s.toString();
-  const headMatch = content.match(/<head>([^]*)<\/head>/);
+  const headMatch = content.match(/<head>([^]*)<\/head>/i);
   const headContent = headMatch && headMatch[1];
 
   if (headContent) {
@@ -78,7 +78,7 @@ function processHTML(rawContent: string) {
   const app = document.getElementById('app');
   
   if (app) {
-    const bodyMatch = content.match(/<body>([^]*)<\/body>/);
+    const bodyMatch = content.match(/<body>([^]*)<\/body>/i);
     let bodyContent = bodyMatch && bodyMatch[1];
 
     if (!bodyContent && !headContent) {
