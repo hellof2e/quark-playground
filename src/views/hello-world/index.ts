@@ -27,7 +27,24 @@ class QuarkGreeting extends QuarkElement {
   color: #0088ff
 }
 `,
-  [ENTRY_HTML]: `<quark-greeting></quark-greeting>`
+  [ENTRY_HTML]: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+      body {
+        font-size: 18px;
+      }
+    </style>
+    <script type="module">
+      import confetti from "https://esm.sh/canvas-confetti@1.6.0"
+      confetti();
+    </script>
+  </head>
+  <body>
+    <quark-greeting></quark-greeting>
+  </body>
+</html>
+`
 };
 
 export default mem;

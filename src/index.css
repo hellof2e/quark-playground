@@ -10,14 +10,17 @@
 }
 
 body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   margin: 0;
 }
 
 #app {
+  flex: 1 0;
   display: flex;
   align-items: stretch;
   width: 100vw;
-  height: 100vh;
   overflow: hidden;
 }
 
@@ -79,10 +82,67 @@ body {
 
 #preview {
   flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  background-color: #f4f4f4;
 }
 
 #preview-iframe {
+  flex-grow: 1;
   width: 100%;
-  height: 100%;
   border: none;
+}
+
+.preview-banner {
+  flex-shrink: 0;
+  position: relative;
+  padding: 16px 12px;
+  border-bottom: 1px solid #dcdcdc;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.preview-banner__text {
+  color: #999;
+}
+
+@keyframes banner-loading {
+  0% {
+    transform: translateX(-100%) scaleX(1);
+    opacity: 1;
+  }
+
+  25% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(50%) scaleX(1.5);
+  }
+
+  75% {
+    transform: translateX(100%) scaleX(0.6);
+  }
+
+  100% {
+    transform: translateX(200%);
+    opacity: .5;
+  }
+}
+
+.preview-banner__loading {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: none;
+  width: 50%;
+  height: 4px;
+  background: #8af;
+  transform-origin: right;
+}
+
+.preview-banner.preview-banner--loading .preview-banner__loading {
+  display: block;
+  animation: banner-loading 1s infinite linear;
 }

@@ -42,37 +42,60 @@ const initApp = () => {
   iframeElem.addEventListener('load', onIframeReload);
 
   // * ——first run build——
+  let lastBuildText: string;
   const doBuild = async ({
     language = 'javascript',
     text = '',
   } = {}) => {
+    let buildText: string;
+    
     if (language === 'html') {
-      updateIframe({
-        type: 'html',
-        payload: text,
-      });
+      // * use cached build result
+      buildText = lastBuildText
+    }
+
+    const iframeReloading = reloadIframe();
+
+    if (!buildText) {
+      const result = await build(read(ENTRY_JS));
+
+      if (result?.outputFiles) {
+        [{ text: buildText }] = result.outputFiles;
+        lastBuildText = buildText;
+      }
+    }
+
+    if (!buildText) {
       return;
     }
-    
-    const result = await build(read(ENTRY_JS));
-
-    if (result?.outputFiles) {
-      const [outputFile] = result.outputFiles;
-      await reloadIframe();
-      updateIframe({
-        type: 'script',
-        payload: outputFile.text,
-      });
-      updateIframe({
-        type: 'html',
-        payload: read(ENTRY_HTML),
-      });
-    }
+  
+    await iframeReloading;
+    updateIframe({
+      type: 'script',
+      payload: buildText,
+    });
+    updateIframe({
+      type: 'html',
+      payload: language === 'html' ? text : read(ENTRY_HTML),
+    });
   };
-
-  const debounceBuild = debounce(doBuild, 500);
+  /* 编译loading状态 */
+  const toggleLoading = (loading: boolean) => {
+    const banner = document.querySelector('.preview-banner');
+  
+    if (banner) {
+      banner.classList.toggle('preview-banner--loading', loading);
+    }
+  }; 
+  /** 请求发起构建 */
+  const reqBuild = async (...args: Parameters<typeof doBuild>) => {
+    toggleLoading(true);
+    await doBuild(...args);
+    toggleLoading(false);
+  };
+  const debouncedReqBuild = debounce(reqBuild, 500);
   // 首次构建
-  doBuild();
+  reqBuild();
   
 
   // * ——initialize tabs & editors——
@@ -137,7 +160,7 @@ const initApp = () => {
         } else if (fileName === ENTRY_CSS) {
           language = 'css'
         }
-        debounceBuild({language, text})
+        debouncedReqBuild({language, text})
       }
     });
     return {
@@ -197,7 +220,7 @@ const initApp = () => {
       const transaction = editorInstance[key].state.update({changes: {from: 0, to: editorInstance[key].state.doc.length, insert: read(key)}})
       editorInstance[key].dispatch(transaction)
     })
-    doBuild();
+    reqBuild();
   }, false)
 };
 

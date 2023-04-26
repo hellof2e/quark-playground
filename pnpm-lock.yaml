@@ -14,6 +14,7 @@ specifiers:
   '@rollup/plugin-commonjs': ^23.0.2
   '@rollup/plugin-node-resolve': ^15.0.1
   '@rollup/plugin-typescript': ^9.0.2
+  '@types/lodash-es': ^4.17.7
   '@vaadin/router': ^1.7.5
   '@vitejs/plugin-vue': ^4.1.0
   '@yankeeinlondon/code-builder': ^1.2.1
@@ -22,6 +23,7 @@ specifiers:
   esbuild-wasm: ^0.17.14
   highlight: ^0.2.4
   lodash-es: ^4.17.21
+  magic-string: ^0.30.0
   monaco-editor: ^0.36.1
   postcss-px-to-viewport: ^1.1.1
   quarkc: ^1.0.4
@@ -44,6 +46,7 @@ dependencies:
   codemirror: 6.0.1
   esbuild-wasm: 0.17.14
   lodash-es: 4.17.21
+  magic-string: 0.30.0
   monaco-editor: 0.36.1
   quarkc: 1.0.4
 
@@ -55,6 +58,7 @@ devDependencies:
   '@rollup/plugin-commonjs': 23.0.7_rollup@3.20.2
   '@rollup/plugin-node-resolve': 15.0.2_rollup@3.20.2
   '@rollup/plugin-typescript': 9.0.2_e7tciabaay7z2i5ycjdzz3zl6i
+  '@types/lodash-es': 4.17.7
   '@vitejs/plugin-vue': 4.1.0_vite@4.2.1
   '@yankeeinlondon/code-builder': 1.2.1_zk66i3bsztstfo3dtyszg5qhyu
   '@yankeeinlondon/link-builder': 1.2.1
@@ -709,7 +713,6 @@ packages:
 
   /@jridgewell/sourcemap-codec/1.4.14:
     resolution: {integrity: sha512-XPSJHWmi394fuUuzDnGz1wiKqWfo1yXecHQMRf2l6hztTO+nPru658AyDngaBe7isIxEkRsPR3FZh+s7iVa4Uw==}
-    dev: true
 
   /@jridgewell/trace-mapping/0.3.17:
     resolution: {integrity: sha512-MCNzAp77qzKca9+W/+I0+sEpaUnZoeasnghNeVc41VZCEKaCH73Vq3BZZ/SzWIgrqE4H4ceI+p+b6C0mHf9T4g==}
@@ -987,6 +990,16 @@ packages:
 
   /@types/linkify-it/3.0.2:
     resolution: {integrity: sha1-/SzS7bqn6qx+fzwXSLUqGRQ4Rsk=}
+    dev: true
+
+  /@types/lodash-es/4.17.7:
+    resolution: {integrity: sha512-z0ptr6UI10VlU6l5MYhGwS4mC8DZyYer2mCoyysZtSF7p26zOX8UpbrV0YpNYLGS8K4PUFIyEr62IMFFjveSiQ==}
+    dependencies:
+      '@types/lodash': 4.14.194
+    dev: true
+
+  /@types/lodash/4.14.194:
+    resolution: {integrity: sha512-r22s9tAS7imvBt2lyHC9B8AGwWnXaYb1tY09oyLkXDs4vArpYJzw09nj8MLx5VfciBPGIb+ZwG0ssYnEPJxn/g==}
     dev: true
 
   /@types/markdown-it/12.2.3:
@@ -2124,7 +2137,7 @@ packages:
     dev: true
 
   /encoding/0.1.13:
-    resolution: {integrity: sha1-VldK/deR9UqOmyeFwFgqLSYhD6k=}
+    resolution: {integrity: sha512-ETBauow1T35Y/WZMkio9jiM0Z5xjHHmJ4XmjZOq1l/dXz3lr2sRn87nJy20RupqSh1F2m3HHPSp8ShIPQJrJ3A==}
     requiresBuild: true
     dependencies:
       iconv-lite: 0.6.3
@@ -2911,6 +2924,13 @@ packages:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
+
+  /magic-string/0.30.0:
+    resolution: {integrity: sha512-LA+31JYDJLs82r2ScLrlz1GjSgu66ZV518eyWT+S8VhyQn/JL0u9MeBOvQMGYiPk1DBiSN9DDMOcXvigJZaViQ==}
+    engines: {node: '>=12'}
+    dependencies:
+      '@jridgewell/sourcemap-codec': 1.4.14
+    dev: false
 
   /make-fetch-happen/9.1.0:
     resolution: {integrity: sha1-UwhaCeeXFDPmdl95cb9j9OBcuWg=}
