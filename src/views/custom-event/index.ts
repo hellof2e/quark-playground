@@ -82,13 +82,21 @@ class MyElement extends QuarkElement {
 }
 `,
   [ENTRY_HTML]: `
-<my-element id="my-element"></my-element>
-<script>
-    const el = document.getElementById("my-element");
-    el.addEventListener('change', (evt) => {
-        alert(evt.detail.value);
-    })
-</script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="module" src="./index.js"></script>
+  </head>
+  <body>
+    <my-element id="my-element"></my-element>
+    <script>
+      const el = document.getElementById("my-element");
+      el.addEventListener('change', (evt) => {
+          alert(evt.detail.value);
+      })
+    </script>
+  </body>
+</html>
 `
 };
 

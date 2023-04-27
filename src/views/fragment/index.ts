@@ -26,7 +26,17 @@ class MyElement extends QuarkElement {
 }
 `,
   [ENTRY_CSS]: ``,
-  [ENTRY_HTML]: `<my-element></my-element>`
+  [ENTRY_HTML]: `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="module" src="./index.js"></script>
+  </head>
+  <body>
+    <my-element></my-element>
+  </body>
+</html>
+`
 };
 
 export default mem;

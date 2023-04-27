@@ -30,15 +30,7 @@ class QuarkGreeting extends QuarkElement {
   [ENTRY_HTML]: `<!DOCTYPE html>
 <html lang="en">
   <head>
-    <style>
-      body {
-        font-size: 18px;
-      }
-    </style>
-    <script type="module">
-      import confetti from "https://esm.sh/canvas-confetti@1.6.0"
-      confetti();
-    </script>
+    <script type="module" src="./index.js"></script>
   </head>
   <body>
     <quark-greeting></quark-greeting>

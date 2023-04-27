@@ -40,12 +40,20 @@ class QuarkList extends QuarkElement {
 }
 `,
   [ENTRY_HTML]: `
-  <quark-list id="list"></quark-list>
-  <script>
-    const el = document.getElementById("list");
-    el.setColumns(['第一行', '第二行', '第三行', '第四行', '第五行'])
-  </script>
-  `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="module" src="./index.js"></script>
+  </head>
+  <body>
+    <quark-list id="list"></quark-list>
+    <script>
+      const el = document.getElementById("list");
+      el.setColumns(['第一行', '第二行', '第三行', '第四行', '第五行'])
+    </script>
+  </body>
+</html>
+`
 };
 
 export default mem;
