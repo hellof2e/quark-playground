@@ -25,6 +25,7 @@ specifiers:
   lodash-es: ^4.17.21
   magic-string: ^0.30.0
   monaco-editor: ^0.36.1
+  parse5: ^7.1.2
   postcss-px-to-viewport: ^1.1.1
   quarkc: ^1.0.4
   rollup: ^3.2.3
@@ -48,6 +49,7 @@ dependencies:
   lodash-es: 4.17.21
   magic-string: 0.30.0
   monaco-editor: 0.36.1
+  parse5: 7.1.2
   quarkc: 1.0.4
 
 devDependencies:
@@ -2157,6 +2159,11 @@ packages:
     engines: {node: '>=0.12'}
     dev: true
 
+  /entities/4.5.0:
+    resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==}
+    engines: {node: '>=0.12'}
+    dev: false
+
   /env-paths/2.2.1:
     resolution: {integrity: sha1-QgOZ1BbOH76bwKB8Yvpo1n/Q+PI=}
     engines: {node: '>=6'}
@@ -3403,6 +3410,12 @@ packages:
       - bluebird
       - supports-color
     dev: true
+
+  /parse5/7.1.2:
+    resolution: {integrity: sha512-Czj1WaSVpaoj0wbhMzLmWD69anp2WH7FXMB9n1Sy8/ZFF9jolSQVMu1Ij5WIyGmcBmhk7EOndpO4mIpihVqAXw==}
+    dependencies:
+      entities: 4.5.0
+    dev: false
 
   /path-exists/4.0.0:
     resolution: {integrity: sha1-UTvb4tO5XXdi6METfvoZXGxhtbM=}

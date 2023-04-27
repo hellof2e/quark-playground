@@ -1,10 +1,19 @@
-import MagicString from 'magic-string';
+// import MagicString from 'magic-string';
+import {
+  parse,
+  serializeOuter,
+  DefaultTreeAdapterMap,
+} from 'parse5';
+import {
+  cleanPath,
+  stripPath,
+} from './utils';
 
 const ENTRY_SCRIPT_ID = 'script-preview';
 
 function runScript(
   content: string,
-  attrs: Record<string, string> = {}
+  attrs: Record<string, string> = {},
 ) {
   const { id, ...restAttrs } = attrs;
   const prevScript = id ? document.getElementById(id) : null;
@@ -26,92 +35,209 @@ function runScript(
   }
 }
 
-const scriptRE = /<script([^>]*)?>([^<]*)<\/script>/ig;
-const scriptAttrRE = /([^=\s]+)(?:=['"]?([^\s'"]*)['"]?)?/ig;
+// const scriptRE = /<script([^>]*)?>([^<]*)<\/script>/ig;
+// const scriptAttrRE = /([^=\s]+)(?:=['"]?([^\s'"]*)['"]?)?/ig;
 
-function parseScriptAttrs(attrs: string): Record<string, string> {
-  const parsedAttrs = {};
-  let match: RegExpExecArray;
+// function parseScriptAttrs(attrs: string): Record<string, string> {
+//   const parsedAttrs = {};
+//   let match: RegExpExecArray | null;
 
-  while ((match = scriptAttrRE.exec(attrs))) {
-    const [_, name, value] = match;
-    parsedAttrs[name] = value || '';
-  }
+//   while ((match = scriptAttrRE.exec(attrs))) {
+//     const [_, name, value] = match;
+//     parsedAttrs[name] = value || '';
+//   }
 
-  return parsedAttrs;
-}
+//   return parsedAttrs;
+// }
 
-function processHTML(rawContent: string) {
-  const s = new MagicString(rawContent);
-  let match: RegExpExecArray;
-  const parsedScripts = [];
+// function processHTML(rawContent: string) {
+//   const s = new MagicString(rawContent);
+//   let match: RegExpExecArray | null;
+//   const parsedScripts: {
+//     content: string;
+//     attrs: Record<string, string>;
+//   }[] = [];
 
-  while ((match = scriptRE.exec(rawContent))) {
-    const [full, attrs, content] = match;
-    parsedScripts.push({
-      content,
-      attrs: parseScriptAttrs(attrs),
-    });
-    s.remove(
-      match.index,
-      match.index + full.length
-    );
-  }
+//   while ((match = scriptRE.exec(rawContent))) {
+//     const [full, attrs, content] = match;
+//     parsedScripts.push({
+//       content,
+//       attrs: parseScriptAttrs(attrs),
+//     });
+//     s.remove(
+//       match.index,
+//       match.index + full.length
+//     );
+//   }
 
-  const content = s.toString();
-  const headMatch = content.match(/<head>([^]*)<\/head>/i);
-  const headContent = headMatch && headMatch[1];
+//   const content = s.toString();
+//   const headMatch = content.match(/<head>([^]*)<\/head>/i);
+//   const headContent = headMatch && headMatch[1];
 
-  if (headContent) {
-    const head = document.createElement('template');
-    head.innerHTML = headContent;
-    document.head.appendChild(head.content);
-  }
+//   if (headContent) {
+//     const head = document.createElement('template');
+//     head.innerHTML = headContent;
+//     document.head.appendChild(head.content);
+//   }
 
-  parsedScripts.forEach(({
-    attrs,
-    content,
-  }) => {
-    runScript(content, attrs);
-  });
+//   parsedScripts.forEach(({
+//     attrs,
+//     content,
+//   }) => {
+//     runScript(content, attrs);
+//   });
 
-  const app = document.getElementById('app');
+//   const root = document.getElementById('preview-root');
   
-  if (app) {
-    const bodyMatch = content.match(/<body>([^]*)<\/body>/i);
-    let bodyContent = bodyMatch && bodyMatch[1];
+//   if (root) {
+//     const bodyMatch = content.match(/<body>([^]*)<\/body>/i);
+//     let bodyContent = bodyMatch && bodyMatch[1];
 
-    if (!bodyContent && !headContent) {
-      bodyContent = content;
+//     if (!bodyContent && !headContent) {
+//       bodyContent = content;
+//     }
+
+//     if (bodyContent) {
+//       const bodyTmpl = document.createElement('template');
+//       bodyTmpl.innerHTML = bodyContent;
+//       root.appendChild(bodyTmpl.content);
+//     }
+//   }
+// }
+
+const reqBuildScript = async (): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const onBuilt = (event: MessageEvent) => {
+      self.removeEventListener('message', onBuilt);
+      const {
+        type,
+        payload,
+      } = event.data;
+
+      if (type === 'buildScript') {
+        if (payload) {
+          resolve(payload);
+        } else {
+          reject();
+        }
+      }
+    };
+    self.addEventListener('message', onBuilt);
+    self.parent.postMessage({
+      type: 'buildScript',
+    });
+  });
+};
+
+function isElementNode(node: DefaultTreeAdapterMap['node']): node is DefaultTreeAdapterMap['element'] {
+  return node.nodeName[0] !== '#';
+}
+
+let currParent: HTMLElement;
+const externalRE = /^(https?:)?\/\//
+
+async function nodeVisitor(node: DefaultTreeAdapterMap['node']) {
+  if (!isElementNode(node)) {
+    return;
+  }
+  
+  const { nodeName } = node;
+
+  if (nodeName === 'head') {
+    currParent = document.head;
+    return;
+  }
+
+  if(nodeName === 'body') {
+    currParent = document.getElementById('preview-root');
+    return;
+  }
+
+  if (!currParent) {
+    return;
+  }
+
+  if (nodeName === 'script') {
+    const attrs = node.attrs.reduce<Record<string, string>>((acc, {
+      name,
+      value,
+    }) => ({
+      [name]: value,
+    }), {});
+    const {
+      src: scriptSrc,
+      ...attrsExceptSrc
+    } = attrs;
+
+    if (
+      scriptSrc
+      && !externalRE.test(scriptSrc)
+      && stripPath(cleanPath(scriptSrc)).startsWith('index.')
+    ) {
+      const text = await reqBuildScript();
+      runScript(
+        text,
+        {
+          id: ENTRY_SCRIPT_ID,
+          type: 'module',
+          ...attrsExceptSrc,
+        },
+      );
+      return;
     }
 
-    if (bodyContent) {
-      const bodyTmpl = document.createElement('template');
-      bodyTmpl.innerHTML = bodyContent;
-      app.appendChild(bodyTmpl.content);
-    }
+    const scriptTextNode = node.childNodes[0] as DefaultTreeAdapterMap['textNode'];
+    runScript(
+      scriptTextNode.value,
+      attrs,
+    );
+    return;
+  }
+
+  const tmpl = document.createElement('template');
+  tmpl.innerHTML = serializeOuter(node);
+  currParent.appendChild(tmpl.content);
+}
+
+async function traverseNodes(node: DefaultTreeAdapterMap['node']) {
+  await nodeVisitor(node);
+  const { nodeName } = node;
+
+  if (
+    isElementNode(node)
+    || nodeName === '#document'
+    || nodeName === '#document-fragment'
+  ) {
+    node.childNodes.forEach(async (childNode) => {
+      await traverseNodes(childNode);
+    });
   }
 }
 
-window.addEventListener('message', (event) => {
+async function traverseHTML(rawContent: string) {
+  const ast = parse(rawContent, {
+    scriptingEnabled: false,
+  });
+  await traverseNodes(ast);
+}
+
+self.addEventListener('message', async (event) => {
   const {
     type,
     payload,
   } = event.data;
 
-  switch (type) {
-    case 'script': {
-      runScript(payload, {
-        id: ENTRY_SCRIPT_ID,
-        type: 'module',
+  if (type === 'update') {
+    let updateResult = 'updated';
+    
+    try {
+      await traverseHTML(payload);
+    } catch (e) {
+      updateResult = 'failed';
+    } finally {
+      self.parent.postMessage({
+        type: updateResult,
       });
-      break;
     }
-    case 'html': {
-      processHTML(payload);
-      break;
-    }
-    default:
-      // noop
   }
 });
