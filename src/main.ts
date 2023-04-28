@@ -14,6 +14,10 @@ import {
 } from './const'
 import build from './build';
 import createEditor from './compoents/Editor/editor';
+import {
+  MSG_BUILD_SCRIPT,
+  MSG_UPDATE,
+} from './const';
 
 const initApp = () => {
   // * ——preview iframe——
@@ -45,7 +49,7 @@ const initApp = () => {
             payload,
           } = event.data;
 
-          if (type === 'update') {
+          if (type === MSG_UPDATE) {
             self.removeEventListener('message', onUpadated);
 
             if (payload) {
@@ -73,7 +77,7 @@ const initApp = () => {
     try {
       await reloadIframe();
       await reqBuildIframeHtml({
-        type: 'update',
+        type: MSG_UPDATE,
         payload: read(ENTRY_HTML),
       });
     } catch (e) {
@@ -98,7 +102,7 @@ const initApp = () => {
       type,
     } = event.data;
 
-    if (type === 'buildScript') {
+    if (type === MSG_BUILD_SCRIPT) {
       const buildResult = await doBuildScript();
       iframeElem
         ?.contentWindow

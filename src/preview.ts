@@ -8,6 +8,10 @@ import {
   cleanPath,
   stripPath,
 } from './utils';
+import {
+  MSG_BUILD_SCRIPT,
+  MSG_UPDATE,
+} from './const';
 
 const ENTRY_SCRIPT_ID = 'script-preview';
 
@@ -113,7 +117,7 @@ const reqBuildScript = async (): Promise<string> => {
         payload,
       } = event.data;
 
-      if (type === 'buildScript') {
+      if (type === MSG_BUILD_SCRIPT) {
         self.removeEventListener('message', onBuilt);
 
         if (payload) {
@@ -125,7 +129,7 @@ const reqBuildScript = async (): Promise<string> => {
     };
     self.addEventListener('message', onBuilt);
     self.parent.postMessage({
-      type: 'buildScript',
+      type: MSG_BUILD_SCRIPT,
     });
   });
 };
@@ -229,7 +233,7 @@ self.addEventListener('message', async (event) => {
     payload,
   } = event.data;
 
-  if (type === 'update') {
+  if (type === MSG_UPDATE) {
     let updateResult = true;
     
     try {
