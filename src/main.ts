@@ -40,15 +40,19 @@ const initApp = () => {
 
       if (iframe) {
         const onUpadated = (event: MessageEvent) => {
-          self.removeEventListener('message', onUpadated);
           const {
             type,
+            payload,
           } = event.data;
 
-          if (type === 'updated') {
-            resolve();
-          } else {
-            reject();
+          if (type === 'update') {
+            self.removeEventListener('message', onUpadated);
+
+            if (payload) {
+              resolve();
+            } else {
+              reject();
+            }
           }
         };
         self.addEventListener('message', onUpadated);
@@ -184,8 +188,6 @@ const initApp = () => {
           language = 'css'
         }
 
-        console.log(language)
-
         if (!editorsUpdating) {
           debouncedReqBuild(language)
         }
@@ -252,7 +254,7 @@ const initApp = () => {
     editorsUpdating = true;
     // 更新 editor
     ;[ENTRY_JS, ENTRY_CSS, ENTRY_HTML]
-      .map((entry) => {
+      .forEach((entry) => {
         const inst = editorInstance[entry];
         const transaction = inst.state.update({
           changes: {
