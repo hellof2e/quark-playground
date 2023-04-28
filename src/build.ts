@@ -2,8 +2,8 @@ import * as esbuild from 'esbuild-wasm';
 import wasmURL from 'esbuild-wasm/esbuild.wasm?url';
 import {
   cleanPath,
-  read,
 } from './utils';
+import { read } from './utils/fs';
 
 let initializing: Promise<void>;
 

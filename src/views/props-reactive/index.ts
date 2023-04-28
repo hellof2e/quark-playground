@@ -84,10 +84,18 @@ class MyElement extends QuarkElement {
 }
 `,
   [ENTRY_HTML]: `
-  <my-element count="0"></my-element>
-  <br/>
-  <my-element count="1" disable></my-element>
-  `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="module" src="./index.js"></script>
+  </head>
+  <body>
+    <my-element count="0"></my-element>
+    <br/>
+    <my-element count="1" disable></my-element>
+  </body>
+</html>
+`
 };
 
 export default mem;

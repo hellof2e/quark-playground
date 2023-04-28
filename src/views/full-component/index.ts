@@ -110,10 +110,17 @@ class MyElement extends QuarkElement {
   border-color: inherit;
 }
 `,
-  [ENTRY_HTML]: `
-  <my-element count="0"></my-element>
-  <br/>
-  <my-element count="1" disabletick></my-element>
+  [ENTRY_HTML]: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="module" src="./index.js"></script>
+  </head>
+  <body>
+    <my-element count="0"></my-element>
+    <br/>
+    <my-element count="1" disabletick></my-element>
+  </body>
+</html>
   `
 };
 

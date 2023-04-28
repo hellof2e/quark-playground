@@ -30,11 +30,19 @@ class MyElement extends QuarkElement {
 `,
   [ENTRY_CSS]: ``,
   [ENTRY_HTML]: `
-<my-element> Default </my-element>
-<my-element> 
-    <span slot="custom"> Custom </span> 
-</my-element>
-  `
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="module" src="./index.js"></script>
+  </head>
+  <body>
+    <my-element> Default </my-element>
+    <my-element> 
+      <span slot="custom"> Custom </span> 
+    </my-element>
+  </body>
+</html>
+`
 };
 
 export default mem;

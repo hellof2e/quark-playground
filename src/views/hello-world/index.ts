@@ -27,7 +27,16 @@ class QuarkGreeting extends QuarkElement {
   color: #0088ff
 }
 `,
-  [ENTRY_HTML]: `<quark-greeting></quark-greeting>`
+  [ENTRY_HTML]: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script type="module" src="./index.js"></script>
+  </head>
+  <body>
+    <quark-greeting></quark-greeting>
+  </body>
+</html>
+`
 };
 
 export default mem;

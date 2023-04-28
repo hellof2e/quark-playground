@@ -2,17 +2,17 @@ import { debounce } from 'lodash-es';
 import { EditorView } from 'codemirror';
 import "./compoents/Header"
 import "./compoents/Menu"
-import build from './build';
 import {
-  read,
   getFileId,
   stripPath,
 } from './utils';
+import { read } from './utils/fs';
 import {
   ENTRY_JS,
   ENTRY_CSS,
   ENTRY_HTML
 } from './const'
+import build from './build';
 import createEditor from './compoents/Editor/editor';
 
 const initApp = () => {
@@ -31,61 +31,106 @@ const initApp = () => {
       reloadIframeResolve();
     }
   };
-  const updateIframe = (message: {
-    type: 'html' | 'script';
+  const reqBuildIframeHtml = (message: {
+    type: string;
     payload: string;
-  }) => {
-    iframeElem
-      ?.contentWindow
-      ?.postMessage(message);
+  }): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      const iframe = iframeElem?.contentWindow;
+
+      if (iframe) {
+        const onUpadated = (event: MessageEvent) => {
+          self.removeEventListener('message', onUpadated);
+          const {
+            type,
+          } = event.data;
+
+          if (type === 'updated') {
+            resolve();
+          } else {
+            reject();
+          }
+        };
+        self.addEventListener('message', onUpadated);
+        iframe.postMessage(message);
+      } else {
+        reject();
+      }
+    });
   };
   iframeElem.addEventListener('load', onIframeReload);
 
   // * ——first run build——
-  const doBuild = async ({
-    language = 'javascript',
-    text = '',
-  } = {}) => {
-    if (language === 'html') {
-      updateIframe({
-        type: 'html',
-        payload: text,
+  let currUpdateType = '';
+  let scriptCache = '';
+  const doBuild = async (language?: string) => {
+    currUpdateType = language;
+
+    try {
+      await reloadIframe();
+      await reqBuildIframeHtml({
+        type: 'update',
+        payload: read(ENTRY_HTML),
       });
-      return;
+    } catch (e) {
+      // noop
+    }
+  };
+  const doBuildScript = async () => {
+    if (currUpdateType === 'html' && scriptCache) {
+      return scriptCache;
     }
     
     const result = await build(read(ENTRY_JS));
-
+  
     if (result?.outputFiles) {
-      const [outputFile] = result.outputFiles;
-      await reloadIframe();
-      updateIframe({
-        type: 'script',
-        payload: outputFile.text,
-      });
-      updateIframe({
-        type: 'html',
-        payload: read(ENTRY_HTML),
-      });
+      [{ text: scriptCache }] = result.outputFiles;
     }
-  };
 
-  const debounceBuild = debounce(doBuild, 500);
+    return scriptCache;
+  };
+  self.addEventListener('message', async (event) => {
+    const {
+      type,
+    } = event.data;
+
+    if (type === 'buildScript') {
+      const buildResult = await doBuildScript();
+      iframeElem
+        ?.contentWindow
+        ?.postMessage({
+          type,
+          payload: buildResult,
+        });
+    }
+  });
+  /* 编译loading状态 */
+  const toggleLoading = (loading: boolean) => {
+    const banner = document.querySelector('.preview-banner');
+  
+    if (banner) {
+      banner.classList.toggle('preview-banner--loading', loading);
+    }
+  }; 
+  /** 请求发起构建 */
+  const reqBuild = async (...args: Parameters<typeof doBuild>) => {
+    toggleLoading(true);
+    await doBuild(...args);
+    toggleLoading(false);
+  };
+  const debouncedReqBuild = debounce(reqBuild, 500);
   // 首次构建
-  doBuild();
+  reqBuild();
   
 
   // * ——initialize tabs & editors——
   const tabs = document.getElementById('code-tabs') as HTMLDivElement;
   const editors = document.getElementById('code-editors') as HTMLDivElement;
-  let editorInstance: {
-    ENTRY_JS?: EditorView,
-    ENTRY_HTML?: EditorView,
-    ENTRY_CSS?: EditorView
-  } = {
-    ENTRY_JS: undefined,
-    ENTRY_HTML: undefined,
-    ENTRY_CSS: undefined
+  let editorsUpdating = false;
+  let editorInstance: Record<string, EditorView> = {
+    [ENTRY_JS]: undefined,
+    [ENTRY_HTML]: undefined,
+    [ENTRY_CSS]: undefined
   };
   const getEditorContainerId = (fileName: string) => `code-editor-${getFileId(fileName)}`;
   const createTabElem = (fileName: string) => {
@@ -132,12 +177,18 @@ const initApp = () => {
       container: editorContainer,
       onChange: (fileName: string, text: string) => {
         let language = 'javascript'
+        
         if (fileName === ENTRY_HTML) {
           language = 'html'
         } else if (fileName === ENTRY_CSS) {
           language = 'css'
         }
-        debounceBuild({language, text})
+
+        console.log(language)
+
+        if (!editorsUpdating) {
+          debouncedReqBuild(language)
+        }
       }
     });
     return {
@@ -159,7 +210,7 @@ const initApp = () => {
       file: ENTRY_HTML,
       language: 'html',
     }
-  ].map(({
+  ].map(async ({
     file,
     language,
   }, index) => {
@@ -191,19 +242,30 @@ const initApp = () => {
     };
   });
 
-  window.addEventListener('hashchange', (e) => {
+  const hashValue = window.location.href.split('/#/')[1] ?  window.location.href.split('/#/')[1] : undefined
+
+  if(!hashValue) {
+    window.location.href = `${window.location.href}#/hello-world`
+  }
+
+  window.addEventListener('hashchange', async () => {
+    editorsUpdating = true;
     // 更新 editor
-    [ENTRY_JS, ENTRY_CSS, ENTRY_HTML].map((key) => {
-      const transaction = editorInstance[key].state.update({changes: {from: 0, to: editorInstance[key].state.doc.length, insert: read(key)}})
-      editorInstance[key].dispatch(transaction)
-    })
-    doBuild();
+    ;[ENTRY_JS, ENTRY_CSS, ENTRY_HTML]
+      .map((entry) => {
+        const inst = editorInstance[entry];
+        const transaction = inst.state.update({
+          changes: {
+            from: 0,
+            to: inst.state.doc.length,
+            insert: read(entry),
+          }
+        });
+        inst.dispatch(transaction);
+      });
+    reqBuild();
+    editorsUpdating = false;
   }, false)
 };
-
-const hashValue = window.location.href.split('/#/')[1] ?  window.location.href.split('/#/')[1] : undefined
-if(!hashValue) {
-  window.location.href = `${ window.location.href}#/hello-world`
-}
 
 document.addEventListener('DOMContentLoaded', initApp);
