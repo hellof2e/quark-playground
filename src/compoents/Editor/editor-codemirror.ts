@@ -13,7 +13,7 @@ import { html } from '@codemirror/lang-html';
 import {
   read,
   write,
-} from '../../utils/fs';
+} from '@/utils/fs';
 
 const getLangExt = (language: string) => {
   switch (language) {
