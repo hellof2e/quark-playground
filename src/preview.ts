@@ -108,13 +108,14 @@ function runScript(
 const reqBuildScript = async (): Promise<string> => {
   return new Promise((resolve, reject) => {
     const onBuilt = (event: MessageEvent) => {
-      self.removeEventListener('message', onBuilt);
       const {
         type,
         payload,
       } = event.data;
 
       if (type === 'buildScript') {
+        self.removeEventListener('message', onBuilt);
+
         if (payload) {
           resolve(payload);
         } else {
@@ -162,6 +163,7 @@ async function nodeVisitor(node: DefaultTreeAdapterMap['node']) {
       name,
       value,
     }) => ({
+      ...acc,
       [name]: value,
     }), {});
     const {
@@ -208,9 +210,9 @@ async function traverseNodes(node: DefaultTreeAdapterMap['node']) {
     || nodeName === '#document'
     || nodeName === '#document-fragment'
   ) {
-    node.childNodes.forEach(async (childNode) => {
+    for (const childNode of node.childNodes) {
       await traverseNodes(childNode);
-    });
+    }
   }
 }
 
@@ -228,15 +230,16 @@ self.addEventListener('message', async (event) => {
   } = event.data;
 
   if (type === 'update') {
-    let updateResult = 'updated';
+    let updateResult = true;
     
     try {
       await traverseHTML(payload);
     } catch (e) {
-      updateResult = 'failed';
+      updateResult = false;
     } finally {
       self.parent.postMessage({
-        type: updateResult,
+        type,
+        payload: updateResult,
       });
     }
   }
