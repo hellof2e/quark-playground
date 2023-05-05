@@ -5,6 +5,7 @@
     background-color: #454545;
     color: #f5f5f5;
     padding: 20px;
+    overflow-y: scroll;
 }
 .menu_item_name {
     font-size: 18px;
