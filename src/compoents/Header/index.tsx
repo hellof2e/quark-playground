@@ -7,14 +7,14 @@ export default class Header extends QuarkElement {
 	@state()
 	menus = [{
 		name: 'Quark',
-		link: 'https://quark.hellobike.com/#/'
+		link: 'https://quarkc.hellobike.com/#/'
 	},{
 		name: 'Quark Design',
 		link: 'https://quark-design.hellobike.com/#/'
 	}]
 
   componentDidMount(): void {}
-  
+
   render() {
     return (
 			<header class="header sticky">
@@ -30,7 +30,7 @@ export default class Header extends QuarkElement {
 						<div class="toper-bar">
 							<div class="menu-group">
 								{
-									this.menus.map((item) => 
+									this.menus.map((item) =>
 									<div class="nav-item menu">
 										<a href={item.link}>
 											{item.name}
