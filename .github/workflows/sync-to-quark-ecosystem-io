@@ -1,0 +1,31 @@
+name: sync to quark-ecosystem/quarkd-docs
+
+on:
+  push:
+    branches:
+      - main # default branch
+    paths:
+      - ".github/workflows/**"
+      - "**"
+
+jobs:
+  copy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3 # 检出仓库
+      - uses: actions/setup-node@v3 # 设置node版本
+        with:
+          node-version: 16
+      - run: npm install
+      - run: npm run build
+
+      - name: Sync
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: main # action 应该部署到的分支。
+          folder: dist # 操作应该部署的文件夹。
+          clean: true
+          # repository-name: hellof2e/vue-quarkd.github.io
+          repository-name: quark-ecosystem/quarkd-docs
+          token: ${{ secrets.GIT_ACTION }}
+          target-folder: playground/
