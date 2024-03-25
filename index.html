@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quark Playground</title>
+    <link rel="shortcut icon" href="https://quark-design.hellobike.com/assets/favicon.7b83b3c2.ico" type="image/x-icon"/>
+    
+    <script type="module" crossorigin src="/assets/vue-c761e0c2.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/index-c20eadc1.js">
+    <link rel="stylesheet" href="/assets/index-fdd429bd.css">
+  </head>
+  <body>
+    <app-header></app-header>
+    <div id="app">
+      <app-menu></app-menu>
+      <div id="code">
+        <div id="code-tabs"></div>
+        <div id="code-editors"></div>
+      </div>
+      <div id="preview">
+        <div class="preview-banner">
+          <div class="preview-banner__text">Result</div>
+          <div class="preview-banner__loading"></div>
+        </div>
+        <iframe
+          src="./preview.html"
+          id="preview-iframe"
+        ></iframe>
+      </div>
+    </div>
+    
+  </body>
+</html>
