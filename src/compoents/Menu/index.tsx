@@ -11,8 +11,7 @@ export default class Menu extends QuarkElement {
     currentMenuName = 'Hello World'
 
     handleMenuClck= (child) => {
-        this.currentMenuName = child.name
-
+      this.currentMenuName = child.name
     }
 
     componentDidMount(): void {}
@@ -27,7 +26,7 @@ export default class Menu extends QuarkElement {
                 }} style={{fontWeight: isCurrent ? 800 : 400, color: isCurrent ? 'white': '#f5f5f5'}}>{child.name}</a>
             })}
         </div>
-        
+
     </div>
    }
    render() {

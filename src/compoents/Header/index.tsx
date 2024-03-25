@@ -7,10 +7,10 @@ export default class Header extends QuarkElement {
 	@state()
 	menus = [{
 		name: 'Quark',
-		link: 'https://quarkc.hellobike.com/#/'
+		link: 'https://quark-ecosystem.github.io/quark-core'
 	},{
 		name: 'Quark Design',
-		link: 'https://quark-design.hellobike.com/#/'
+		link: 'https://quark-ecosystem.github.io/quarkd-docs'
 	}]
 
   componentDidMount(): void {}
@@ -22,7 +22,7 @@ export default class Header extends QuarkElement {
 					<div class="container">
 						<div class="left-bar">
 							<a href="/">
-								<img src="https://quark-design.hellobike.com/assets/quark-logo.f9a6a307.png" alt="" />
+								<img src="https://raw.githubusercontent.com/hellof2e/static/main/quark-logo.png" alt="" />
 							</a>
 							<div id="docsearch"></div>
 						</div>

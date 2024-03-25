@@ -7,11 +7,11 @@ export const menus: MenuItem [] = [{
     childrens: [
         {
             name: 'Hello World',
-            link: '/#/hello-world'
+            link: './#/hello-world'
         },
         {
             name: 'Full component', // 生命周期
-            link: '/#/full-component'
+            link: './#/full-component'
         }
     ]
 },{
@@ -19,15 +19,15 @@ export const menus: MenuItem [] = [{
     childrens: [
         {
             name: 'State reactive',
-            link: '/#/state-reactive'
+            link: './#/state-reactive'
         },
         {
             name: 'Props reactive',
-            link: '/#/props-reactive'
+            link: './#/props-reactive'
         },
         {
             name: 'Skill guid',
-            link: '/#/skill-guid'
+            link: './#/skill-guid'
         }
     ]
 },{
@@ -35,27 +35,27 @@ export const menus: MenuItem [] = [{
     childrens: [
         {
             name: 'Expression types',
-            link: '/#/expression-types'
+            link: './#/expression-types'
         },
         {
             name: 'Conditional templates',
-            link: '/#/conditional-templates'
+            link: './#/conditional-templates'
         },
         {
             name: 'Repeating templates',
-            link: '/#/repeating-templates'
+            link: './#/repeating-templates'
         },
         {
             name: 'Slotting children',
-            link: '/#/slotting-children'
+            link: './#/slotting-children'
         },
         {
             name: 'Css in js',
-            link: '/#/css-in-js'
+            link: './#/css-in-js'
         },
         {
             name: 'Fragment',
-            link: '/#/fragment'
+            link: './#/fragment'
         }
     ]
 },{
@@ -63,11 +63,11 @@ export const menus: MenuItem [] = [{
     childrens: [
         {
             name: 'Native event',
-            link: '/#/native-event'
+            link: './#/native-event'
         },
         {
             name: 'Custom event',
-            link: '/#/custom-event'
+            link: './#/custom-event'
         }
     ]
 },{
@@ -75,7 +75,7 @@ export const menus: MenuItem [] = [{
     childrens: [
         {
             name: 'ref directive',
-            link: '/#/ref-directive'
+            link: './#/ref-directive'
         }
     ]
 },]
