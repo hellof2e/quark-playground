@@ -13,7 +13,6 @@ export default class Header extends QuarkElement {
 		link: 'https://quark-ecosystem.github.io/quarkd-docs'
 	}]
 
-  componentDidMount(): void {}
 
   render() {
     return (

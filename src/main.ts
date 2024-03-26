@@ -84,9 +84,9 @@ const initApp = () => {
     if (currUpdateType === 'html' && scriptCache) {
       return scriptCache;
     }
-    
+
     const result = await build(read(ENTRY_JS));
-  
+
     if (result?.outputFiles) {
       [{ text: scriptCache }] = result.outputFiles;
     }
@@ -111,11 +111,11 @@ const initApp = () => {
   /* 编译loading状态 */
   const toggleLoading = (loading: boolean) => {
     const banner = document.querySelector('.preview-banner');
-  
+
     if (banner) {
       banner.classList.toggle('preview-banner--loading', loading);
     }
-  }; 
+  };
   /** 请求发起构建 */
   const reqBuild = async (...args: Parameters<typeof doBuild>) => {
     toggleLoading(true);
@@ -125,7 +125,7 @@ const initApp = () => {
   const debouncedReqBuild = debounce(reqBuild, 500);
   // 首次构建
   reqBuild();
-  
+
 
   // * ——initialize tabs & editors——
   const tabs = document.getElementById('code-tabs') as HTMLDivElement;
@@ -145,13 +145,13 @@ const initApp = () => {
       if (tabElem.classList.contains('active')) {
         return;
       }
-      
+
       const activeTabElem = document.querySelector('.code-tab.active');
 
       if (activeTabElem) {
         activeTabElem.classList.remove('active');
       }
-      
+
       tabElem.classList.add('active');
 
       const activeEditorContainer = document.querySelector('.code-editor.active');
@@ -181,7 +181,7 @@ const initApp = () => {
       container: editorContainer,
       onChange: (fileName: string, text: string) => {
         let language = 'javascript'
-        
+
         if (fileName === ENTRY_HTML) {
           language = 'html'
         } else if (fileName === ENTRY_CSS) {
@@ -223,7 +223,7 @@ const initApp = () => {
     }
 
     tabs.appendChild(tab);
-    
+
     const {
       editorContainer,
       editor,
@@ -232,7 +232,7 @@ const initApp = () => {
     if (index === 0) {
       editorContainer.classList.add('active');
     }
-    
+
     editors.appendChild(editorContainer);
     editorInstance[file] = editor;
     return {
