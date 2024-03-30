@@ -3,10 +3,7 @@ name: sync to quark-ecosystem/quarkd-docs
 on:
   push:
     branches:
-      - main # default branch
-    paths:
-      - ".github/workflows/**"
-      - "**"
+      - main
 
 jobs:
   copy:
