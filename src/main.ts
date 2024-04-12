@@ -1,6 +1,6 @@
 import { debounce } from 'lodash-es';
 import { EditorView } from 'codemirror';
-import "./compoents/Header"
+// import "./compoents/Header"
 import "./compoents/Menu"
 import {
   getFileId,
