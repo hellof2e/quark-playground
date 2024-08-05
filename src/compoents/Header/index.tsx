@@ -21,7 +21,7 @@ export default class Header extends QuarkElement {
 					<div class="container">
 						<div class="left-bar">
 							<a href="/">
-								<img src="https://raw.githubusercontent.com/hellof2e/static/main/quark-logo.png" alt="" />
+								<img src="https://cdn.jsdelivr.net/npm/quark-static@latest/quark-logo.png" alt="" />
 							</a>
 							<div id="docsearch"></div>
 						</div>
